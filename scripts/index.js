@@ -1,6 +1,6 @@
 import { DynamicPropertiesDefinition, system, world } from "@minecraft/server";
 import { config } from "./config";
-import { getPlayer, send, convertTimeToMs, formatTime } from "./functionLib";
+import { getPlayer, send, convertTimeToMs, formatTime, noCmd } from "./functionLib";
 
 let timeStarted = new Date().getTime()
 let host;
@@ -178,7 +178,8 @@ world.beforeEvents.chatSend.subscribe(msg=>{
                 }
                 break;
             default:
-                msg.cancel = bol;
+                if(config.acknowledgeWrongCommand) noCmd(msg.sender, args[0])
+                else msg.cancel = bol;
                 break;
         }
     }
