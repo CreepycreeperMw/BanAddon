@@ -111,12 +111,12 @@ world.beforeEvents.chatSend.subscribe(msg=>{
                 system.run(()=>{
                     let time = null
                     if(args.length>2) {
-                        let timeStampTxt = args.slice(2,-1).join('')
+                        let timeStampTxt = args.slice(2).join('')
                         time = 0;
                         // years
                         time += convertTimeToMs(31536000,timeStampTxt.match(/\d+(?=y)/gi))
                         // months
-                        time += convertTimeToMs(26352000,timeStampTxt.match(/\d+(?=mo)/gi))
+                        time += convertTimeToMs(2635200,timeStampTxt.match(/\d+(?=mo)/gi))
                         // weeks
                         time += convertTimeToMs(604800,timeStampTxt.match(/\d+(?=w)/gi))
                         // days
