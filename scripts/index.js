@@ -1,4 +1,4 @@
-import { DynamicPropertiesDefinition, system, world } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
 import { config } from "./config";
 import { getPlayer, send, convertTimeToMs, formatTime, noCmd } from "./functionLib";
 
@@ -38,8 +38,9 @@ world.afterEvents.playerJoin.subscribe(evt=>{
     }
 })
 
-world.afterEvents.worldInitialize.subscribe(evt=>{
-    evt.propertyRegistry.registerWorldDynamicProperties(new DynamicPropertiesDefinition().defineString("bannedList",32767,"").defineString("playerList",32767,""))
+world.afterEvents.worldInitialize.subscribe(()=>{
+    world.setDynamicProperty("bannedList",world.getDynamicProperty("bannedList") || "")
+    world.setDynamicProperty("playerList",world.getDynamicProperty("playerList") || "")
     world.getDynamicProperty("bannedList").split(";").forEach(entry=>{
         if(entry=='') return;
         let [id, due] = entry.split(":");
