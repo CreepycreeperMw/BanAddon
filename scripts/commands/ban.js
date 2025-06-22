@@ -1,7 +1,7 @@
 import { CommandPermissionLevel, CustomCommandParamType, CustomCommandStatus, world } from "@minecraft/server";
 import { Command, fail, success } from "../commandhandler";
 import { banned, knownPlayers } from "..";
-import { formatTime, getPlayer, send } from "../functionLib";
+import { convertTimeToMs, formatTime, getPlayer, send } from "../functionLib";
 import { config } from "../config";
 
 new Command("ban","Banishes a player from the world making them unable to join", ["tempban"], false, [
@@ -11,6 +11,16 @@ new Command("ban","Banishes a player from the world making them unable to join",
 ])
     .setExecutor((command, sender, label, [targetArg, reason, ...timestampParts])=>{
         let target = getPlayer(targetArg)
+
+        if(targetArg === "list") {
+            if(!Object.keys(banned)[0]) return send(msg.sender, "§7There are no banned players")
+
+            let list = "§fThe following players are banned:"
+            Object.keys(banned).forEach(plId=>{
+                list+="\n§7 - §8"+plId+": §7"+knownPlayers.get(plId)
+            })
+            return success(list)
+        } else if(targetArg === "\\list") targetArg = "list"
 
         if(!target) {
             if(targetArg.startsWith('@')) targetArg = targetArg.replace(/@/,'');
@@ -66,7 +76,7 @@ new Command("ban","Banishes a player from the world making them unable to join",
         if(world.gameRules.sendCommandFeedback === false && sender.sourceEntity.typeId === "minecraft:player") send(sender.sourceEntity, resultMessage);
 
         return {
-            message: resultMessage,
+            message: resultMessage+" Reason: "+reason,
             status: CustomCommandStatus.Success
         }
     })
