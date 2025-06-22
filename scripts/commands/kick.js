@@ -1,5 +1,5 @@
 import { CommandPermissionLevel, CustomCommandParamType, CustomCommandStatus, Player, world } from "@minecraft/server";
-import { Command, fail, success } from "../commands";
+import { Command, fail, success } from "../commandhandler";
 import { config } from "../config";
 
 new Command("kick","Removes a player from the world temporarely",["tempkick","tkick","crash"], false, [

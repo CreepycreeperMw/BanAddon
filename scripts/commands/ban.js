@@ -1,5 +1,5 @@
 import { CommandPermissionLevel, CustomCommandParamType, CustomCommandStatus, world } from "@minecraft/server";
-import { Command, fail, success } from "../commands";
+import { Command, fail, success } from "../commandhandler";
 import { banned, knownPlayers } from "..";
 import { formatTime, getPlayer, send } from "../functionLib";
 import { config } from "../config";
