@@ -7,9 +7,9 @@ let host;
 /** 
  * indexed by playerId
  * returns name
- * @type {Map<string, string}
+ * @type {Map<string, string>}
  */
-const knownPlayers = new Map()
+export const knownPlayers = new Map()
 
 if(world.getAllPlayers().length > 0)  {
     if(world.getAllPlayers().length > 1) host = -1
@@ -20,7 +20,12 @@ if(world.getAllPlayers().length > 0)  {
  * A list of all banned players indexed by their ID returning an date until they are banned or -1 if its forever
  * @type {{[playerId: string]:number}}
  */
-const banned = {}
+export const banned = {}
+/**
+ * The player that is currently attempting to reset the database
+ * (This is only relevant for a brief moment)
+ * @type {{player: import("@minecraft/server").Player, time: ReturnType<Date["getTime"]>}}
+ */
 const deletingPlayer = {}
 
 world.afterEvents.playerJoin.subscribe(evt=>{
@@ -38,7 +43,7 @@ world.afterEvents.playerJoin.subscribe(evt=>{
     }
 })
 
-world.afterEvents.worldInitialize.subscribe(()=>{
+world.afterEvents.worldLoad.subscribe((e)=>{
     world.setDynamicProperty("bannedList",world.getDynamicProperty("bannedList") || "")
     world.setDynamicProperty("playerList",world.getDynamicProperty("playerList") || "")
     world.getDynamicProperty("bannedList").split(";").forEach(entry=>{
@@ -51,6 +56,12 @@ world.afterEvents.worldInitialize.subscribe(()=>{
         if(entry=='') return;
         let [id, name] = entry.split(":");
         knownPlayers.set(id, name)
+    })
+})
+
+system.beforeEvents.startup.subscribe(e=>{
+    e.customCommandRegistry.registerCommand("ban", (origin, ...args)=>{
+
     })
 })
 
@@ -95,8 +106,7 @@ world.beforeEvents.chatSend.subscribe(msg=>{
             case "tempban":
             case "ban":
                 if(!target && args[1]) {
-                    target = [...knownPlayers.entries()].find(pl=>pl[1]==(args[1].startsWith('@') ? args[1].replace(/@/,'') : args[1]))
-                    if(target) target = {triggerEvent:()=>{}, id: target[0], name: target[1]}
+                    
                 }
                 if(!target && args[1] != "list") return send(msg.sender, "§cYou need to specify a valid target player to ban");
                 if(args[1]=="list") {
@@ -167,7 +177,7 @@ world.beforeEvents.chatSend.subscribe(msg=>{
                 })
                 break;
             case "reset":
-                if(deletingPlayer.player = msg.sender.id && deletingPlayer.time) {
+                if(deletingPlayer.player == msg.sender.id && deletingPlayer.time) {
                     system.run(()=>{
                         world.setDynamicProperty("playerList","")
                         world.setDynamicProperty("bannedList","")
