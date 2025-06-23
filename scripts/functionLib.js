@@ -154,7 +154,7 @@ export function formatTime(seconds) {
     if(days>0) str += days+" Days, "
     if(hours>0) str += hours+" Hours, "
     if(minutes>0) str += minutes+" Minutes, "
-    if(seconds < 3600) str += Math.ceil(time)+" Seconds, "
+    if(seconds < 3600) str += Math.floor(time)+" Seconds, "
     
     return str.substring(0,str.length-2);
 }

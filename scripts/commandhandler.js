@@ -59,7 +59,7 @@ export function fail(message) {
 
 export function success(message) {
     return {
-        message,
+        message: config.chatPrefix + ' §r§7' + message,
         status: CustomCommandStatus.Success
     }
 }
@@ -85,7 +85,7 @@ system.beforeEvents.startup.subscribe(e=>{
                     mandatoryParameters: mandatoryParams,
                     optionalParameters: optionalParams
                 }, (origin, ...args)=>{
-                    cmd.executor(cmd, origin, name, args)
+                    return cmd.executor(cmd, origin, name, args)
                 })
             } catch(err) {
                 console.warn("Encountered an error while registering your command:", err)

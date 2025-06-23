@@ -1,8 +1,8 @@
 {
 	"format_version": 1,
 	"header": {
-		"description": "§fUse §b!ban <name>§f to ban and do §b!unban <name>§f to unban someone! Use §b!crash§f and §b!kick§f to crash or kick players! Requires §5Beta APIs§f experiment to work. For temporare bans use §b!tempban <player>§f and a timeframe like 3 months. You do this by using the time constructor: #y #mo #w #d #h #min #s, e.g.: §7!ban <name> 3mo 2h§f. §aMade by §aCreepycreeperMw",
-		"name": "§kVA§r§l§4No Hackers! Ban Addon Remastered§r§kVA§r",
+		"description": "§fUse §b/ban <name>§f to ban and do §b/unban <name>§f to unban someone! Use §b/crash§f and §b!kick§f to crash or kick players! Requires §5Beta APIs§f experiment to work. For temporare bans use §b/tempban <player>§f and a timeframe like 3 months. You do this by using the time constructor: #y #mo #w #d #h #min #s, e.g.: §7/ban <name> 3mo 2h§f. §aMade by §aCreepycreeperMw",
+		"name": "§r§l§4No Hackers! Ban Addon Remastered§r§r",
 		"uuid": "480531c2-bd26-11e9-a3ae-2b2ae7dbcce4",
 		"version": [
 			3,
@@ -32,7 +32,7 @@
 	"dependencies": [
 		{
 			"module_name": "@minecraft/server",
-			"version": "1.7.0-beta"
+			"version": "2.1.0-beta"
 		}
 	]
 }
