@@ -12,6 +12,9 @@ new Command("ban","Banishes a player from the world making them unable to join",
     .setExecutor((command, sender, label, [targetArg, reason, ...timestampParts])=>{
         let target = getPlayer(targetArg)
 
+        if(target.commandPermissionLevel >= CommandPermissionLevel.Host) return fail("You cannot ban the host of the world.")
+
+        // Return a list of all banned players
         if(targetArg === "list") {
             let banList = Object.keys(banned).filter(plId=> banned[plId] === -1 || (banned[plId] - new Date().getTime()/1000) > 0)
             if(!banList[0]) return success("§7There are no banned players")
@@ -23,6 +26,7 @@ new Command("ban","Banishes a player from the world making them unable to join",
             return success(list)
         } else if(targetArg === "\\list") targetArg = "list"
 
+        // If player offline, search for entry in the player database
         if(!target) {
             if(targetArg.startsWith('@')) targetArg = targetArg.replace(/@/,'');
             target = [...knownPlayers.entries()].find(pl=>pl[1]==(targetArg))

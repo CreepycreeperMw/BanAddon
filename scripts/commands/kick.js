@@ -9,7 +9,7 @@ new Command("kick","Removes a player from the world temporarely",["tempkick","tk
     .setExecutor((command, sender, label, [target])=>{
         target = target[0]
         if(!target || !(target instanceof Player)) return fail("§cYou need to specify a valid target player to kick");
-        if(host.id === target.id) return fail("You cannot kick the host of the world.")
+        if(target.commandPermissionLevel >= CommandPermissionLevel.Host) return fail("You cannot kick the host of the world.")
         
         world.sendMessage({rawtext:[{translate:"multiplayer.player.left",with:["§e"+target.name]}]})
         system.run(()=>target.triggerEvent("c:crash"))
