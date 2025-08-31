@@ -8,22 +8,6 @@
             "is_experimental": false
         },
         "component_groups": {
-            "server:standard_player": {
-                "minecraft:health": {
-                    "value": 20,
-                    "max": 20
-                },
-                "minecraft:scale": {
-                    "max": 1,
-                    "value": 1
-                },
-                "minecraft:movement": {
-                    "value": 0.1
-                },
-                "minecraft:attack": {
-                    "damage": 1
-                }
-            },
             "v:vanish": {
                 "minecraft:scale": {
                     "max": 0,
@@ -225,19 +209,9 @@
                     "component_groups": [
                         "c:crash"
                     ]
-                },
-                "remove": {
-                    "component_groups": [
-                        "server:standard_player"
-                    ]
                 }
             },
             "c:unban": {
-                "add": {
-                    "component_groups": [
-                        "server:standard_player"
-                    ]
-                },
                 "remove": {
                     "component_groups": [
                         "c:unban"
@@ -249,19 +223,9 @@
                     "component_groups": [
                         "v:vanish"
                     ]
-                },
-                "remove": {
-                    "component_groups": [
-                        "server:standard_player"
-                    ]
                 }
             },
             "v:has_unvanish": {
-                "add": {
-                    "component_groups": [
-                        "server:standard:player"
-                    ]
-                },
                 "remove": {
                     "component_groups": [
                         "v:vanish"
@@ -269,24 +233,12 @@
                 }
             },
             "server:reset_player": {
-                "add": {
-                    "component_groups": [
-                        "server:standard_player"
-                    ]
-                },
                 "remove": {
                     "component_groups": [
                         "c:unban",
                         "v:vanish"
                     ]
                 }
-            }
-        },
-        "minecraft:entity_spawned": {
-            "add": {
-                "component_groups": [
-                    "server:standard_player"
-                ]
             }
         }
     }
