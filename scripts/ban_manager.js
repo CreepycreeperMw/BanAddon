@@ -45,7 +45,9 @@ world.afterEvents.worldLoad.subscribe(()=>{
 
         banned[id] = parseInt(due)
     })
-    world.getAllPlayers().map(pl=>pl.id+":"+pl.name).concat(world.getDynamicProperty("playerList").split(";")).forEach(entry=>{
+
+    // Load all existing players in from the db
+    world.getDynamicProperty("playerList").split(";").concat(world.getAllPlayers().map(pl=>pl.id+":"+pl.name)).forEach(entry=>{
         if(entry=='') return;
         let [id, name] = entry.split(":");
         knownPlayers.set(id, name)
