@@ -80,8 +80,8 @@ export function delay(delay) {
  * @author CreepycreeperMw
  * @returns {Player | undefined} returns either the Player Object or undefined if no player was found.
  */
- export function getPlayer(nameArg) {
-    var player;
+export function getPlayer(nameArg) {
+    let player;
     if(nameArg.startsWith("@")) {
         player = [...world.getPlayers()].find(player => player.name===nameArg.slice(1))
     } else {

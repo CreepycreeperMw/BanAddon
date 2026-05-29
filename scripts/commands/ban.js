@@ -1,18 +1,26 @@
-import { CommandPermissionLevel, CustomCommandParamType, CustomCommandStatus, system, world } from "@minecraft/server";
+import { CommandPermissionLevel, CustomCommandParamType, CustomCommandStatus, Player, system, world } from "@minecraft/server";
 import { Command, fail, success } from "../commandhandler";
-import { banned, knownPlayers } from "../ban_manager";
+import { ban, banned, knownPlayers } from "../ban_manager";
 import { convertTimeToMs, formatTime, getPlayer, send } from "../functionLib";
 import { config } from "../config";
+import { banMenu } from "../menus/banMenu";
 
 new Command("ban","Banishes a player from the world making them unable to join", ["tempban"], false, [
-    {name: "playerName", type: CustomCommandParamType.String},
+    {name: "playerName", type: CustomCommandParamType.String, optional: true},
     {name: "reason", type: CustomCommandParamType.String, optional: true},
     {name: "timestamp", type: CustomCommandParamType.String, optional: true}
 ])
-    .setExecutor((command, sender, label, [targetArg, reason, ...timestampParts])=>{
-        let target = getPlayer(targetArg)
-
-        if(target.commandPermissionLevel >= CommandPermissionLevel.Host) return fail("You cannot ban the host of the world.")
+    .setExecutor((command, sender, label, [targetArg, reason, ...timestampParts]) => {
+        if(!targetArg) {
+            if(sender.sourceEntity instanceof Player) {
+                system.run(() => {
+                    banMenu(sender.sourceEntity)
+                })
+                return success("Opened ban menu!")
+            } else {
+                return fail("You can only omit the playerName argument if you are a player who can open the UI interface")
+            }
+        }
 
         // Return a list of all banned players
         if(targetArg === "list") {
@@ -26,11 +34,17 @@ new Command("ban","Banishes a player from the world making them unable to join",
             return success(list)
         } else if(targetArg === "\\list") targetArg = "list"
 
+        let target = getPlayer(targetArg)
+
         // If player offline, search for entry in the player database
         if(!target) {
             if(targetArg.startsWith('@')) targetArg = targetArg.replace(/@/,'');
             target = [...knownPlayers.entries()].find(pl=>pl[1]==(targetArg))
             if(target) target = {triggerEvent:()=>{}, id: target[0], name: target[1]}
+        } else {
+            // Player is online
+            if(target.commandPermissionLevel >= CommandPermissionLevel.Host)
+                return fail("You cannot ban the host of the world.")
         }
 
         if(!target) return {message: "Could not find that player in the database. Please provide a valid player name to ban", status: CustomCommandStatus.Failure}
@@ -64,20 +78,14 @@ new Command("ban","Banishes a player from the world making them unable to join",
         let resultMessage;
 
         if(time==null) {
-            time = -1
-
             resultMessage = "§"+config.color+target.name+" §7has been §6banned§7"
         } else {
             time = Math.round(new Date().getTime()/1000) + time
-
             resultMessage = (`§${config.color+target.name} §7has been §6temporarely banned§7 for §c${formatTime(time-Math.floor(new Date().getTime()/1000))}`)
         }
 
-        // Adding the player to ban list in RAM and in DB
-        banned[target.id] = time;
-        world.setDynamicProperty("bannedList",world.getDynamicProperty("bannedList").replace(new RegExp(target.id+":-?\\d+?;","g"),"")+target.id+":"+time+";")
-        // Removing the player from the world without .kick() so he is not banned for the entire server session and can rejoin if he is unbanned
-        try{system.run(()=>target.triggerEvent("c:crash"))} catch(err) {console.warn("shit", err)}
+        // ban the player
+        ban(target, time)
 
         if(world.gameRules.sendCommandFeedback === false && sender.sourceEntity.typeId === "minecraft:player") send(sender.sourceEntity, resultMessage);
 
